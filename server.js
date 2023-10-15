@@ -35,15 +35,17 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/index.html'))
 })
 
-app.get('/videos', async (req, res) => {
+app.get('/splash', async (req, res) => {
   const iframe = getVideoFrame(0)
   res.send(iframe)
 })
 
 app.get('/videos/:video_num', async (req, res) => {
-  const index = req.params.video_num
+  const index = req.params.video_num - 1
   const iframe = getVideoFrame(index)
-  res.send(iframe)
+  const button = `<button hx-get="/videos/${index + 2}" hx-swap=outerHTML>Next</button>`
+  const html = `${iframe}\n${button}`
+  res.send(html)
 })
 
 app.listen(PORT, () => {
@@ -65,9 +67,12 @@ async function refreshSearch () {
 
 function getVideoFrame (index = 0) {
   const videoId = currentVideoIDList[index]
-  return `<iframe style="width: 100%; height : 100%; display:block; margin: auto"
-    src="https://www.youtube.com/embed/${videoId}">
-    </iframe> <br/> <p><i>Not on our watch. </br>-WMI</i></p>`
+  return `
+    <iframe id=video-iframe
+            src="https://www.youtube.com/embed/${videoId}"
+            hx-swap-oob=true>
+    </iframe>
+  `
 }
 
 async function getReverseSortedVideoViewList () {
