@@ -8,8 +8,8 @@ const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
 const YOUTUBE_URL = `https://youtube.googleapis.com/youtube/v3/search?order=date&q=test%20ignore&type=video&maxResults=50&videoEmbeddable=any&key=${YOUTUBE_API_KEY}`
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/index.html'));
-  });
+  res.sendFile(path.join(__dirname, '/index.html'));
+});
 
 //don't overcall API. Update max every 5 minutes.
 let lastCalledUpdateVideo = 0
@@ -59,39 +59,39 @@ async function updateVideoID () {
 }
 
 function makeIFrame () {
-    return `<iframe style="width: 100%; height : 100%; display:block; margin: auto"
+  return `<iframe style="width: 100%; height : 100%; display:block; margin: auto"
     src="https://www.youtube.com/embed/${currentVideoID}">
     </iframe> <br/> <p><i>Not on our watch. </br>-WMI</i></p>`
 }
 
 async function getReverseSortedVideoViewList () {
-    let currentTime = Date.now();
-    //if current time is within 5 minutes of last call, return last video id
-    if (currentTime - lastCalledUpdateList < (1000 * 60 *5)) return currentVideoList
-    //else, get the new info from fetch
-    let idString = ''
-    currentVideoIDList.forEach(el => {
-        idString += `${el}%2C`
+  let currentTime = Date.now();
+  //if current time is within 5 minutes of last call, return last video id
+  if (currentTime - lastCalledUpdateList < (1000 * 60 *5)) return currentVideoList
+  //else, get the new info from fetch
+  let idString = ''
+  currentVideoIDList.forEach(el => {
+    idString += `${el}%2C`
+  })
+  idString = idString.slice(0,-3)
+  const newVideoID = await fetch(`https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=${idString}&key=${YOUTUBE_API_KEY}`)
+    .then(res => res.json())
+    .then(data => {
+      // currentVideoID = data.items[0].id.videoId
+      return currentVideoID})
+    .catch(error => {
+      console.log('ERROR in getData fetch:', error)
+      return currentVideoID
     })
-    idString = idString.slice(0,-3)
-    const newVideoID = await fetch(`https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=${idString}&key=${YOUTUBE_API_KEY}`)
-        .then(res => res.json())
-        .then(data => {
-            // currentVideoID = data.items[0].id.videoId
-            return currentVideoID})
-        .catch(error => {
-            console.log('ERROR in getData fetch:', error)
-            return currentVideoID
-        })
-    return newVideoID
+  return newVideoID
 }
 
 getReverseSortedVideoViewList()
 
 app.get('/recentVid', async (req, res) => {
-    await updateVideoID()
+  await updateVideoID()
   const iframe = makeIFrame()
-    res.send(iframe)
+  res.send(iframe)
 })
 
 app.listen(port, () => {
