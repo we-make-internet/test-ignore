@@ -32,10 +32,18 @@ app.get('/', (req, res) => {
 })
 
 app.get('/videos/:video_num', async (req, res) => {
-  const index = req.params.video_num - 1
-  const iframe = getVideoFrame(index)
-  const button = `<button hx-get="/videos/${index + 2}" hx-swap=outerHTML>Next</button>`
-  const html = `${iframe}\n${button}`
+  // Parse the video number, return BAD REQUEST if it fails
+  let videoNum
+  try {
+    videoNum = parseInt(req.params.video_num)
+  } catch (err) {
+    console.error(`Failed to parse video_num ${req.params.video_num}`)
+    return res.sendStatus(400)
+  }
+
+  const iframe = getVideoFrame(videoNum)
+  const buttons = getButtons(videoNum)
+  const html = `${iframe}\n${buttons}`
   res.send(html)
 })
 
@@ -56,7 +64,8 @@ async function refreshSearch () {
   }
 }
 
-function getVideoFrame (index = 0) {
+function getVideoFrame (videoNum) {
+  const index = videoNum - 1
   const videoId = currentVideoIDList[index]
   return `
     <iframe id=video-iframe
@@ -64,4 +73,16 @@ function getVideoFrame (index = 0) {
             hx-swap-oob=true>
     </iframe>
   `
+}
+
+function getButtons (videoNum) {
+  let prevButton
+  if (videoNum == 1) {
+    prevButton = '<button disabled>Prev</button>'
+  } else {
+    prevButton = `<button hx-get=/videos/${videoNum - 1}>Prev</button>`
+  }
+
+  const nextButton = `<button hx-get=/videos/${videoNum + 1}>Next</button>`
+  return `${prevButton}\n${nextButton}`
 }

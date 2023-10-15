@@ -86,8 +86,9 @@ div.controls {
 <div id="video-container">
   {{ iframe | safe }}
 </div>
-<div class=controls>
-  <button hx-get=/videos/2 hx-swap=outerHTML>Next</button>
+<div class=controls hx-swap=innerHTML hx-target=this>
+  <button disabled>Previous</button>
+  <button hx-get=/videos/2>Next</button>
 </div>
 <div class=statement>
   <i>Not on our watch. </br>-WMI</i>
