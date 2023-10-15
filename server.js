@@ -1,21 +1,16 @@
 const express = require('express')
-const app = express()
-const port = 8080
-require('dotenv').config()
-const path = require('path');
+const path = require('node:path')
 
+require('dotenv').config()
+
+const PORT = 8080
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
 const YOUTUBE_URL = `https://youtube.googleapis.com/youtube/v3/search?order=date&q=test%20ignore&type=video&maxResults=50&videoEmbeddable=any&key=${YOUTUBE_API_KEY}`
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '/index.html'));
-});
 
 //don't overcall API. Update max every 5 minutes.
 let lastCalledUpdateVideo = 0
 let lastCalledUpdateList = 0
 let currentVideoID = ''
-// let currentVideoIDList = []
 let currentVideoIDList = [
   'qKwSyQ0E2MU', 'VEDhPveofv0', 'wJQ-c8puy64',
   '-oYYkv4-_3E', 'LiGUDtcMQhE', 'qqcKUh5QJv0',
@@ -35,13 +30,26 @@ let currentVideoIDList = [
   'e-Sps-Edo7A', 'Rgb_TrNMoOQ', 'rm4BvHCjijk',
   'SSuc5S0Rxyk', '9rcDaAhPfyU'
 ]
-let currentVideoIDObjects = []
 
+const app = express()
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '/index.html'))
+})
+
+app.get('/recentVid', async (req, res) => {
+  await updateVideoID()
+  const iframe = makeIFrame()
+  res.send(iframe)
+})
+
+app.listen(PORT, () => {
+  console.log(`Example app listening on http://localhost:${PORT}`)
+})
 
 //get relevant youtube data
 async function updateVideoID () {
   //get current time
-  let currentTime = Date.now();
+  let currentTime = Date.now()
   //if current time is within 5 minutes of last call, return last video id
   if (currentTime - lastCalledUpdateVideo < (1000 * 60 *5)) return currentVideoID
   //else, get the new info from fetch
@@ -65,7 +73,7 @@ function makeIFrame () {
 }
 
 async function getReverseSortedVideoViewList () {
-  let currentTime = Date.now();
+  let currentTime = Date.now()
   //if current time is within 5 minutes of last call, return last video id
   if (currentTime - lastCalledUpdateList < (1000 * 60 *5)) return currentVideoList
   //else, get the new info from fetch
@@ -85,15 +93,3 @@ async function getReverseSortedVideoViewList () {
     })
   return newVideoID
 }
-
-getReverseSortedVideoViewList()
-
-app.get('/recentVid', async (req, res) => {
-  await updateVideoID()
-  const iframe = makeIFrame()
-  res.send(iframe)
-})
-
-app.listen(port, () => {
-  console.log(`Example app listening on http://localhost:${port}`)
-})
