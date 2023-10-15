@@ -3,58 +3,71 @@
 <meta charset="UTF-8">
 <title>Page Title</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="">
 <script src="https://unpkg.com/htmx.org@1.9.4" integrity="sha384-zUfuhFKKZCbHTY6aRR46gxiqszMk5tcHjsVFxnUo8VMus4kHGVdIYVbOYYNlKmHV" crossorigin="anonymous"></script>
 <style>
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #000;
-    }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
+  background-color: #000;
+  color: white;
+}
 
-    li {
-    float: left;
-    }
+main {
+  height: 90vh;
+}
 
-    li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    }
+iframe {
+  border: none;
+}
 
-    /* Change the link color to #111 (black) on hover */
-    li a:hover {
-    text-decoration: underline;
-    }
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-        padding: 0%;
-        margin: 0%;
-        height: 90vh;
-        background-color: #000;
-        color: white;
-    }
-    iframe {
-        border: none;
-    }
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #000;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  text-decoration: underline;
+}
+
+div.video-container {
+  width: 80%;
+  height: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5vh;
+  text-align: center;
+}
 </style>
-<script src=""></script>
-<body>
-<ul>
-    <li><a href="default.asp"><b>Test Ignore</b></a></li>
-    <li><a href="news.asp">About</a></li>
+
+<header>
+  <ul>
+    <li><a href="/"><b>Test Ignore</b></a></li>
+    <li><a href="/about">About</a></li>
     <li style="float:right"><a class="active" href="#about">from We Make Internet</a></li>
-</ul>
+  </ul>
+</header>
 
-<div hx-get="/videos" hx-trigger="load" style="width: 80%; height: 80%; margin-left: auto; margin-right: auto; margin-top: 5vh; text-align: center;">
-    <!-- <img  alt="Result loading..." class="htmx-indicator" width="150" src="/img/bars.svg"/> -->
-    <img  alt="Result loading..."/>
+<main>
+<div hx-get="/videos"
+     hx-trigger="load"
+     class="video-container">
+    <img alt="Result loading..."/>
 </div>
-
-
-</body>
-</html>
+</main>
