@@ -35,8 +35,14 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/index.html'))
 })
 
-app.get('/recentVid', async (req, res) => {
-  const iframe = makeIFrame()
+app.get('/videos', async (req, res) => {
+  const iframe = getVideoFrame(0)
+  res.send(iframe)
+})
+
+app.get('/videos/:video_num', async (req, res) => {
+  const index = req.params.video_num
+  const iframe = getVideoFrame(index)
   res.send(iframe)
 })
 
@@ -45,7 +51,7 @@ app.listen(PORT, () => {
 })
 
 async function refreshSearch () {
-  //if current time is within 5 minutes of last call, return
+  //if current time is within 5 minutes of last call, don't refres
   if (currentTime - lastCalledUpdateVideo < (1000 * 60 *5)) return
   //else, get the new info from fetch
   try {
@@ -57,8 +63,8 @@ async function refreshSearch () {
   }
 }
 
-function makeIFrame (index) {
-  const videoId = currentVideoIDList[0]
+function getVideoFrame (index = 0) {
+  const videoId = currentVideoIDList[index]
   return `<iframe style="width: 100%; height : 100%; display:block; margin: auto"
     src="https://www.youtube.com/embed/${videoId}">
     </iframe> <br/> <p><i>Not on our watch. </br>-WMI</i></p>`
