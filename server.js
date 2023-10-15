@@ -5,7 +5,6 @@ require('dotenv').config()
 const path = require('path');
 
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
-console.log(YOUTUBE_API_KEY)
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/index.html'));
@@ -50,17 +49,12 @@ const updateVideoID = async () => {
     const newVideoID = await fetch(`https://youtube.googleapis.com/youtube/v3/search?order=date&q=test%20ignore&type=video&maxResults=50&videoEmbeddable=any&key=${YOUTUBE_API_KEY}`)
         .then(res => res.json())
         .then(data => {
-            console.log('in fetch')
-            // console.log(data.items)
             currentVideoID = data.items[0].id.videoId
             currentVideoIDList = data.items.map(el => el.id.videoId)
-            console.log(currentVideoIDList)
             return currentVideoID})
         .catch(error => {
-            console.log('ERROR in getData fetch:', error)
             return currentVideoID
         })
-    console.log(newVideoID)
     return newVideoID
 }
 
@@ -80,19 +74,15 @@ const getReverseSortedVideoViewList = async () => {
         idString += `${el}%2C`
     })
     idString = idString.slice(0,-3)
-    console.log(idString)
     const newVideoID = await fetch(`https://youtube.googleapis.com/youtube/v3/videos?part=statistics&id=${idString}&key=${YOUTUBE_API_KEY}`)
         .then(res => res.json())
         .then(data => {
-            console.log('in reverse seated fetch')
-            console.log(data)
             // currentVideoID = data.items[0].id.videoId
             return currentVideoID})
         .catch(error => {
             console.log('ERROR in getData fetch:', error)
             return currentVideoID
         })
-    console.log(newVideoID)
     return newVideoID
 }
 
@@ -100,7 +90,6 @@ getReverseSortedVideoViewList()
 
 app.get('/recentVid', async (req, res) => {
     await updateVideoID()
-    console.log('about to send', currentVideoID)
     res.send(makeIFrame())
 })
 
