@@ -5,12 +5,11 @@ require('dotenv').config()
 
 const PORT = 8080
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
-const YOUTUBE_URL = `https://youtube.googleapis.com/youtube/v3/search?order=date&q=test%20ignore&type=video&maxResults=50&videoEmbeddable=any&key=${YOUTUBE_API_KEY}`
+const YOUTUBE_SEARCH_URL = `https://youtube.googleapis.com/youtube/v3/search?order=date&q=test%20ignore&type=video&maxResults=50&videoEmbeddable=any&key=${YOUTUBE_API_KEY}`
 
 //don't overcall API. Update max every 5 minutes.
 let lastCalledUpdateVideo = 0
 let lastCalledUpdateList = 0
-let currentVideoID = ''
 let currentVideoIDList = [
   'qKwSyQ0E2MU', 'VEDhPveofv0', 'wJQ-c8puy64',
   '-oYYkv4-_3E', 'LiGUDtcMQhE', 'qqcKUh5QJv0',
@@ -37,7 +36,6 @@ app.get('/', (req, res) => {
 })
 
 app.get('/recentVid', async (req, res) => {
-  await updateVideoID()
   const iframe = makeIFrame()
   res.send(iframe)
 })
@@ -46,29 +44,23 @@ app.listen(PORT, () => {
   console.log(`Example app listening on http://localhost:${PORT}`)
 })
 
-//get relevant youtube data
-async function updateVideoID () {
-  //get current time
-  let currentTime = Date.now()
-  //if current time is within 5 minutes of last call, return last video id
-  if (currentTime - lastCalledUpdateVideo < (1000 * 60 *5)) return currentVideoID
+async function refreshSearch () {
+  //if current time is within 5 minutes of last call, return
+  if (currentTime - lastCalledUpdateVideo < (1000 * 60 *5)) return
   //else, get the new info from fetch
-
   try {
-    const apiRes = await fetch(YOUTUBE_URL)
+    const apiRes = await fetch(YOUTUBE_SEARCH_URL)
     const data = await apiRes.json()
-    currentVideoID = data.items[0].id.videoId
     currentVideoIDList = data.items.map(el => el.id.videoId)
-    return currentVideoID
   } catch (err) {
     console.error(err)
-    return currentVideoID
   }
 }
 
-function makeIFrame () {
+function makeIFrame (index) {
+  const videoId = currentVideoIDList[0]
   return `<iframe style="width: 100%; height : 100%; display:block; margin: auto"
-    src="https://www.youtube.com/embed/${currentVideoID}">
+    src="https://www.youtube.com/embed/${videoId}">
     </iframe> <br/> <p><i>Not on our watch. </br>-WMI</i></p>`
 }
 
