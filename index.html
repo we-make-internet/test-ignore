@@ -82,10 +82,9 @@ div.controls {
 </header>
 
 <main>
-<div hx-get="/splash" hx-trigger="load"></div>
 
 <div id="video-container">
-    <div id=video-iframe>Video loading...</div>
+  {{ iframe | safe }}
 </div>
 <div class=controls>
   <button hx-get=/videos/2 hx-swap=outerHTML>Next</button>

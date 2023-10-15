@@ -1,7 +1,8 @@
-const express = require('express')
-const path = require('node:path')
+import * as dotenv from 'dotenv'
+import express from 'express'
+import nunjucks from 'nunjucks'
 
-require('dotenv').config()
+dotenv.config()
 
 const PORT = 8080
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
@@ -23,13 +24,11 @@ let currentVideoIDList = [
 ]
 
 const app = express()
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '/index.html'))
-})
+nunjucks.configure('.', { express: app })
 
-app.get('/splash', async (req, res) => {
+app.get('/', (req, res) => {
   const iframe = getVideoFrame(0)
-  res.send(iframe)
+  res.render('./index.html', { iframe })
 })
 
 app.get('/videos/:video_num', async (req, res) => {

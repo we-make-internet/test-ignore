@@ -3,9 +3,11 @@
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
+  "type": "module",
   "dependencies": {
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "nunjucks": "^3.2.4"
   }
 }
