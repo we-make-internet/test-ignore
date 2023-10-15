@@ -27,7 +27,7 @@ const app = express()
 nunjucks.configure('.', { express: app })
 
 app.get('/', (req, res) => {
-  const iframe = getVideoFrame(0)
+  const iframe = getVideoFrame(1)
   res.render('./index.html', { iframe })
 })
 
@@ -75,6 +75,12 @@ function getVideoFrame (videoNum) {
   `
 }
 
+function getPrefetchLink (videoNum) {
+  const index = videoNum - 1
+  const videoId = currentVideoIDList[index]
+  return `<link rel=prefetch href="https://www.youtube.com/embed/${videoId}" as=document />`
+}
+
 function getButtons (videoNum) {
   let prevButton
   if (videoNum == 1) {
@@ -84,5 +90,6 @@ function getButtons (videoNum) {
   }
 
   const nextButton = `<button hx-get=/videos/${videoNum + 1}>Next</button>`
-  return `${prevButton}\n${nextButton}`
+  const link = getPrefetchLink(videoNum + 2)
+  return `${prevButton}\n${nextButton}\n${link}`
 }
