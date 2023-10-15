@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 const port = 6969
-const fetch = require('node-fetch')
 require('dotenv').config()
 const path = require('path');
 
@@ -11,8 +10,8 @@ console.log(YOUTUBE_API_KEY)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/index.html'));
   });
-  
-  
+
+
 
 //don't overcall API. Update max every 5 minutes.
 let lastCalledUpdateVideo = 0
