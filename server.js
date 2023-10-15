@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 6969
+const port = 8080
 require('dotenv').config()
 const path = require('path');
 
@@ -94,5 +94,5 @@ app.get('/recentVid', async (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on http://localhost:${port}`)
 })
