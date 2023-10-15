@@ -40,24 +40,25 @@ let currentVideoIDObjects = []
 
 //get relevant youtube data
 async function updateVideoID () {
-    //get current time
-    let currentTime = Date.now();
-    //if current time is within 5 minutes of last call, return last video id
-    if (currentTime - lastCalledUpdateVideo < (1000 * 60 *5)) return currentVideoID
-    //else, get the new info from fetch
-    const newVideoID = await fetch(YOUTUBE_URL)
-        .then(res => res.json())
-        .then(data => {
-            currentVideoID = data.items[0].id.videoId
-            currentVideoIDList = data.items.map(el => el.id.videoId)
-            return currentVideoID})
-        .catch(error => {
-            return currentVideoID
-        })
-    return newVideoID
+  //get current time
+  let currentTime = Date.now();
+  //if current time is within 5 minutes of last call, return last video id
+  if (currentTime - lastCalledUpdateVideo < (1000 * 60 *5)) return currentVideoID
+  //else, get the new info from fetch
+
+  try {
+    const apiRes = await fetch(YOUTUBE_URL)
+    const data = await apiRes.json()
+    currentVideoID = data.items[0].id.videoId
+    currentVideoIDList = data.items.map(el => el.id.videoId)
+    return currentVideoID
+  } catch (err) {
+    console.error(err)
+    return currentVideoID
+  }
 }
 
-async function makeIFrame () {
+function makeIFrame () {
     return `<iframe style="width: 100%; height : 100%; display:block; margin: auto"
     src="https://www.youtube.com/embed/${currentVideoID}">
     </iframe> <br/> <p><i>Not on our watch. </br>-WMI</i></p>`
@@ -89,7 +90,8 @@ getReverseSortedVideoViewList()
 
 app.get('/recentVid', async (req, res) => {
     await updateVideoID()
-    res.send(makeIFrame())
+  const iframe = makeIFrame()
+    res.send(iframe)
 })
 
 app.listen(port, () => {
