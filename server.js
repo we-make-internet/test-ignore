@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'
 import express from 'express'
 import nunjucks from 'nunjucks'
 
-dotenv.config()
+if (NODE_ENV === 'development') dotenv.config()
 
 const PORT = 8080
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
