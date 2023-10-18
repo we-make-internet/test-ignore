@@ -67,6 +67,15 @@ div.controls {
   font-size: 1.5rem;
 }
 
+.controls label {
+  font-size: 1.5rem;
+}
+
+.controls input[type=checkbox] {
+  height: 1rem;
+  width: 1rem;
+}
+
 .statement {
   width: fit-content;
   margin: 0 auto;
@@ -88,9 +97,23 @@ div.controls {
 </div>
 <div class=controls hx-swap=innerHTML hx-target=this>
   <button disabled>Prev</button>
-  <button hx-get=/videos/2>Next</button>
+  <button id=next-button hx-get=/videos/2>Next</button>
 </div>
-<div class=statement>
-  <i>Not on our watch. </br>-WMI</i>
+<div class=controls>
+  <label>Autoscroll <input onchange="autoscrollChange(this)" type=checkbox autocomplete=off></label>
 </div>
 </main>
+
+<script>
+function autoscrollChange(checkbox) {
+  const nextButton = document.getElementById('next-button')
+  const isOn = checkbox.checked
+  if (isOn) {
+    checkbox.interval = setInterval(() => {
+      htmx.trigger('#next-button', 'click')
+    }, 10000)
+  } else {
+    clearInterval(checkbox.interval)
+  }
+}
+</script>

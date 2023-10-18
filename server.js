@@ -69,7 +69,7 @@ function getVideoFrame (videoNum) {
   const videoId = currentVideoIDList[index]
   return `
     <iframe id=video-iframe
-            src="https://www.youtube.com/embed/${videoId}"
+            src="https://www.youtube.com/embed/${videoId}?autoplay=1"
             hx-swap-oob=true>
     </iframe>
   `
@@ -89,7 +89,7 @@ function getButtons (videoNum) {
     prevButton = `<button hx-get=/videos/${videoNum - 1}>Prev</button>`
   }
 
-  const nextButton = `<button hx-get=/videos/${videoNum + 1}>Next</button>`
+  const nextButton = `<button id=next-button hx-get=/videos/${videoNum + 1}>Next</button>`
   const link = getPrefetchLink(videoNum + 2)
   return `${prevButton}\n${nextButton}\n${link}`
 }
