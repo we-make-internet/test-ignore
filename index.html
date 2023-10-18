@@ -80,6 +80,14 @@ div.controls {
   width: fit-content;
   margin: 0 auto;
 }
+
+footer {
+  margin-top: 2rem;
+}
+.banner {
+  display: block;
+  margin: 0 auto;
+}
 </style>
 
 <header>
@@ -102,6 +110,15 @@ div.controls {
 <div class=controls>
   <label>Autoscroll <input onchange="autoscrollChange(this)" type=checkbox autocomplete=off></label>
 </div>
+<footer>
+  <a href="https://htmx.org">
+    <img class=banner
+          width=300px
+          src="/static/htmx-the-right-way.jpeg"
+          alt="A banner image that says 'site created with htmx, the right way', flanked by two
+               pixelated notepads">
+  </a>
+</footer>
 </main>
 
 <script>

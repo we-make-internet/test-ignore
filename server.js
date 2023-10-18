@@ -26,6 +26,8 @@ let currentVideoIDList = [
 const app = express()
 nunjucks.configure('.', { express: app })
 
+app.use('/static', express.static('static'))
+
 app.get('/', (req, res) => {
   const iframe = getVideoFrame(1)
   res.render('./index.html', { iframe })
