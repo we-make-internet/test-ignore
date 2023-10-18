@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'
 import express from 'express'
 import nunjucks from 'nunjucks'
 
-if (NODE_ENV === 'development') dotenv.config()
+if (process.env.NODE_ENV === 'development') dotenv.config()
 
 const PORT = 8080
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
@@ -39,12 +39,17 @@ app.get('/videos/:video_num', async (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on http://localhost:${PORT}`)
+  console.log(`Listening on http://localhost:${PORT}`)
 })
 
 async function refreshSearch () {
   try {
     const apiRes = await fetch(YOUTUBE_SEARCH_URL)
+    if (apiRes.status !== 200) {
+      const text = await apiRes.text()
+      console.error(text)
+      throw new Error('Failed to fetch initial search results from the API')
+    }
     const data = await apiRes.json()
     currentVideoIDList = data.items.map(el => el.id.videoId)
   } catch (err) {
