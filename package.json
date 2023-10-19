@@ -1,8 +1,9 @@
 {
   "name": "test-ignore",
   "scripts": {
-    "start": "node server.js",
-    "dev": "NODE_ENV=development nodemon -e js,html server.js"
+    "deploy": "flyctl deploy --config ./fly/fly.toml --dockerfile ./fly/Dockerfile",
+    "dev": "NODE_ENV=development nodemon -e js,html server.js",
+    "start": "node server.js"
   },
   "type": "module",
   "dependencies": {
