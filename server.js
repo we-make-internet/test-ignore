@@ -21,6 +21,8 @@ app.get('/', (_req, res) => {
   const iframe = getVideoFrame(1)
   res.render('./index.html', { iframe })
 })
+app.get('/about', (req, res) => { res.render('./about.html') })
+
 
 app.get('/videos/:video_num', async (req, res) => {
   // Parse the video number, return BAD REQUEST if it fails
