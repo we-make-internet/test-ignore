@@ -24,7 +24,8 @@
   <button id=next-button hx-get=/videos/2>Next</button>
 </div>
 <div class=controls>
-  <label>Autoscroll <input onchange="autoscrollChange(this)" type=checkbox autocomplete=off></label>
+  <label for=seconds>Autoscroll<input type=checkbox onchange=autoscrollChange(this) autocomplete=off></label>
+  <label for=seconds><input type=number value=10 id=seconds> seconds</label>
 </div>
 <footer>
   <a href="https://htmx.org">
@@ -39,15 +40,31 @@
 </main>
 
 <script>
-function autoscrollChange(checkbox) {
-  const nextButton = document.getElementById('next-button')
-  const isOn = checkbox.checked
-  if (isOn) {
-    checkbox.interval = setInterval(() => {
-      htmx.trigger('#next-button', 'click')
-    }, 10000)
-  } else {
-    clearInterval(checkbox.interval)
+let autoscrollInterval
+
+function disableAutoscroll () {
+  if (autoscrollInterval) {
+    clearInterval(autoscrollInterval)
+    autoscrollInterval = null
   }
 }
+
+function setAutoscroll (timeInMs) {
+  disableAutoscroll()
+  const clickNext = () => htmx.trigger('#next-button', 'click')
+  autoscrollInterval = setInterval(clickNext, timeInMs)
+}
+
+function autoscrollChange(checkbox) {
+  const secondsElem = document.getElementById('seconds')
+  const isOn = checkbox.checked
+  if (isOn) {
+    setAutoscroll(secondsElem.value * 1000)
+    secondsElem.setAttribute('disabled', true)
+  } else {
+    disableAutoscroll()
+    secondsElem.removeAttribute('disabled')
+  }
+}
+
 </script>
