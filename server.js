@@ -8,7 +8,6 @@ const PORT = 8080
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
 const YOUTUBE_SEARCH_URL = `https://youtube.googleapis.com/youtube/v3/search?order=date&q=test%20ignore&type=video&maxResults=50&videoEmbeddable=any&key=${YOUTUBE_API_KEY}`
 
-let lastCalledUpdateVideo = 0
 let currentVideoIDList = []
 
 const app = express()
@@ -19,9 +18,9 @@ app.use('/static', express.static('static'))
 
 app.get('/', (_req, res) => {
   const iframe = getVideoFrame(1)
-  res.render('./index.html', { iframe })
+  res.render('./views/index.html', { iframe })
 })
-app.get('/about', (req, res) => { res.render('./about.html') })
+app.get('/about', (_req, res) => { res.render('./views/about.html') })
 
 
 app.get('/videos/:video_num', async (req, res) => {
