@@ -7,12 +7,14 @@ if (process.env.NODE_ENV === 'development') dotenv.config()
 const PORT = 8080
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY
 const YOUTUBE_SEARCH_URL = `https://youtube.googleapis.com/youtube/v3/search?order=date&q=test%20ignore&type=video&maxResults=50&videoEmbeddable=any&key=${YOUTUBE_API_KEY}`
+const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24
 
 let currentVideoIDList = []
 
 const app = express()
 nunjucks.configure('.', { express: app })
 await refreshSearch()
+setInterval(refreshSearch, ONE_DAY_IN_MS)
 
 app.use('/static', express.static('static'))
 
